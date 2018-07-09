@@ -18,26 +18,17 @@ public class CalculateSales {
 		HashMap<String, String> branchSales = new HashMap<>();
 		
 		
-		/*売上ファイル読み込み*/
-		ArrayList<String> salesFile = new ArrayList<String>();
-		
-		File dir = new File(args[0]);
-		File[] files = dir.listFiles();
-		for(int i = 0; i < files.length; i++){
-    		System.out.println(files);
-		}
-
-		
-		/*支店定義ファイル読み込み*/
+/*----------支店定義ファイル読み込み-----------*/
 		try{
     		File file = new File(args[0], "branch.lst");
 	    	FileReader filereader = new FileReader(file);
 	        BufferedReader br = new BufferedReader(filereader);
-	    	
-	    	String str = br.readLine();
-	    	while(str != null){
-	    		System.out.println(str);
-	    		str = br.readLine();
+	    	String s = br.readLine();
+	    	while(s != null){
+	    		String[] str = s.split(",");
+	    		branchName.put(str[0], str[1]);
+	    		System.out.println(branchName.get(str[0]));
+	    		s = br.readLine();
 	    	}
 	        br.close();
 		}catch(FileNotFoundException e){
@@ -45,11 +36,47 @@ public class CalculateSales {
 		}catch(NumberFormatException e){
 			System.out.println("支店定義ファイルのフォーマットが不正です");
 		}catch(IOException e) {
-			System.out.println(e);
+			System.out.println("予期せぬエラーが発生しました");
 		}
 		
 		
-        
-
+/*------------売上ファイル読み込み--------*/
+		ArrayList<String> fileName = new ArrayList<String>();
+		
+		File dir = new File(args[0]);
+		File[] files = dir.listFiles();
+		for(int i = 0; i < files.length; i++){
+			File item = files[i];
+    		if(item.getName().matches("^\\d{8}\\.rcd$")){
+    			fileName.add(files[i].getName());
+    			
+    		}
+		}
+		
+		
+		//if文で、連番になっているかのチェック
+		
+		
+		
+		for(int i = 0; i < fileName.size(); i++){
+			System.out.println(fileName.get(i));
+			try{
+		        File file = new File(args[0], fileName.get(i));
+    	        FileReader filereader = new FileReader(file);
+                BufferedReader br = new BufferedReader(filereader);
+    	        String str = br.readLine();
+    	        while(str != null){
+    	        	System.out.println(str);
+    	    		str = br.readLine();
+    	    	}
+    	        br.close();	        
+			} catch (FileNotFoundException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO 自動生成された catch ブロック
+				e.printStackTrace();
+			}
+		}
 	}
 }
