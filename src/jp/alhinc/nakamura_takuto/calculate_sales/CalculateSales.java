@@ -162,8 +162,13 @@ public class CalculateSales {
 
 		//branch.outファイルへ出力
 			for(Map.Entry<String, String> entry : branchName.entrySet()) {
-				bw.write(entry.getKey() + "," + entry.getValue() + "," + branchSales.get(entry.getKey()));
-				bw.newLine();
+				if(branchSales.get(entry.getKey()) == null){
+					bw.write(entry.getKey() + "," + entry.getValue() + "," + 0);
+					bw.newLine();
+				}else{
+					bw.write(entry.getKey() + "," + entry.getValue() + "," + branchSales.get(entry.getKey()));
+					bw.newLine();
+				}
 			}
 
 		} catch (IOException e) {
