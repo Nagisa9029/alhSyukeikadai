@@ -74,7 +74,7 @@ public class CalculateSales {
 			File item = files[i];
 
 			//売上ファイル名の選別チェック
-			if(item.getName().matches("^\\d{8}\\.rcd$")){
+			if(item.getName().matches("^\\d{8}\\.rcd$") && item.isFile()){
 				rcdName.add(files[i].getName());
 
 			//連番チェック用リスト抽出
