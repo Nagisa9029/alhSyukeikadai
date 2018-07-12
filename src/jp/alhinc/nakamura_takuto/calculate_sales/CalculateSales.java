@@ -26,8 +26,7 @@ public class CalculateSales {
 			return;
 		}
 /*------------------------支店定義ファイル読み込み--------------------*/
-		inPut(args[0], "branch.lst", branchName);
-		if(!inPut(args[0], "branch.lst", branchName)){
+		if(!input(args[0], "branch.lst", branchName)){
 			return;
 		}
 /*
@@ -160,9 +159,7 @@ public class CalculateSales {
 
 
 /*---------------------出力処理------------------------*/
-
-		outPut(args[0], "branch.out", branchName, branchSales);
-		if(!outPut(args[0], "branch.out", branchName, branchSales)){
+		if(!output(args[0], "branch.out", branchName, branchSales)){
 			return;
 		}
 /*
@@ -201,8 +198,8 @@ public class CalculateSales {
 
 /*--------------入力メソッド(支店定義ファイル-------------------------*/
 
-	public static boolean inPut(String arg, String filename, HashMap<String, String>branchName){
-		File file = new File(arg, filename);
+	public static boolean input(String arg, String fileName, HashMap<String, String>branchName){
+		File file = new File(arg, fileName);
 		BufferedReader br = null;
 
 		//支店定義ファイルが存在しない場合
@@ -243,8 +240,8 @@ public class CalculateSales {
 
 
 /*---------------------出力メソッド-----------------------------------*/
-	public static boolean outPut(String arg, String filename, HashMap<String, String>branchName, HashMap<String, Long>branchSales){
-		File fileUp = new File(arg, filename);
+	public static boolean output(String arg, String fileName, HashMap<String, String>branchName, HashMap<String, Long>branchSales){
+		File fileUp = new File(arg, fileName);
 		BufferedWriter bw = null;
 		try {
 			FileWriter fw = new FileWriter(fileUp);
