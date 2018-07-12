@@ -26,47 +26,9 @@ public class CalculateSales {
 			return;
 		}
 /*------------------------支店定義ファイル読み込み--------------------*/
-		if(!input(args[0], "branch.lst", branchName)){
+		if(!input(args[0], "branch.lst", branchName, branchSales)){
 			return;
 		}
-/*
-		File file = new File(args[0], "branch.lst");
-		BufferedReader br = null;
-
-		//支店定義ファイルが存在しない場合
-		if(!file.exists()){
-			System.out.println("支店定義ファイルが存在しません");
-			return;
-		}
-		try{
-			FileReader fr = new FileReader(file);
-			br = new BufferedReader(fr);
-			String s;
-			while((s = br.readLine()) != null){
-				String[] str = s.split(",");
-
-				//支店定義ファイルのフォーマットに関するIF
-				if(str.length == 2 && str[0].matches("^\\d{3}$")){
-					branchName.put(str[0], str[1]);
-				}else{  //支店定義ファイルのフォーマットが不正な場合
-					System.out.println("支店定義ファイルのフォーマットが不正です");
-					return;
-				}
-			}
-		}catch(IOException e) {
-			System.out.println("予期せぬエラーが発生しました");
-			return;
-		}finally{
-			try {
-				if(br != null){
-					br.close();
-				}
-			}catch (IOException e) {
-				System.out.println("予期せぬエラーが発生しました");
-				return;
-			}
-		}
-*/
 
 /*---------------------売上ファイル読み込み--------------------*/
 		ArrayList<String> rcdName = new ArrayList<String>();
@@ -130,20 +92,17 @@ public class CalculateSales {
 					System.out.println("予期せぬエラーが発生しました");
 					return;
 				}
-		//売上HashMapにキーが存在していれば、加算してUoDate.。なければ新規登録
-				if(branchSales.containsKey(salesArray.get(0))){
-					sum = Long.parseLong(salesArray.get(1)) + branchSales.get(salesArray.get(0));
+		//売上HashMapを支店コード（key）で呼び出し、加算
+				sum = Long.parseLong(salesArray.get(1)) + branchSales.get(salesArray.get(0));
 
 		//集計売上金額が１０桁を超えた場合
-					if(String.valueOf(sum).length() > 10){
-						System.out.println("合計金額が10桁を超えました");
-						return;
-					}else{
-						branchSales.put(salesArray.get(0), sum);
-					}
+				if(String.valueOf(sum).length() > 10){
+					System.out.println("合計金額が10桁を超えました");
+					return;
 				}else{
-					branchSales.put(salesArray.get(0), Long.parseLong(salesArray.get(1)));
+					branchSales.put(salesArray.get(0), sum);
 				}
+				
 			} catch (IOException e) {
 				System.out.println("予期せぬエラーが発生しました");
 				return;
@@ -162,44 +121,12 @@ public class CalculateSales {
 		if(!output(args[0], "branch.out", branchName, branchSales)){
 			return;
 		}
-/*
-		File fileUp = new File(args[0], "branch.out");
-		BufferedWriter bw = null;
-		try {
-			FileWriter fw = new FileWriter(fileUp);
-			bw = new BufferedWriter(fw);
-
-		//branch.outファイルへ出力
-			for(Map.Entry<String, String> entry : branchName.entrySet()) {
-				if(branchSales.get(entry.getKey()) == null){
-					bw.write(entry.getKey() + "," + entry.getValue() + "," + 0);
-					bw.newLine();
-				}else{
-					bw.write(entry.getKey() + "," + entry.getValue() + "," + branchSales.get(entry.getKey()));
-					bw.newLine();
-				}
-			}
-
-		} catch (IOException e) {
-			System.out.println("予期せぬエラーが発生しました");
-			return;
-		}finally{
-			try {
-				if(bw != null){
-					bw.close();
-				}
-			} catch (IOException e) {
-				System.out.println("予期せぬエラーが発生しました");
-				return;
-			}
-		}
-*/
 	}
 
 /*--------------入力メソッド(支店定義ファイル-------------------------*/
 
-	public static boolean input(String arg, String fileName, HashMap<String, String>branchName){
-		File file = new File(arg, fileName);
+	public static boolean input(String psth, String fileName, HashMap<String, String>listName, HashMap<String, Long>listSales){
+		File file = new File(psth, fileName);
 		BufferedReader br = null;
 
 		//支店定義ファイルが存在しない場合
@@ -216,7 +143,8 @@ public class CalculateSales {
 
 				//支店定義ファイルのフォーマットに関するIF
 				if(str.length == 2 && str[0].matches("^\\d{3}$")){
-					branchName.put(str[0], str[1]);
+					listName.put(str[0], str[1]);
+					listSales.put(str[0], 0L);
 				}else{  //支店定義ファイルのフォーマットが不正な場合
 					System.out.println("支店定義ファイルのフォーマットが不正です");
 					return false;
@@ -240,20 +168,20 @@ public class CalculateSales {
 
 
 /*---------------------出力メソッド-----------------------------------*/
-	public static boolean output(String arg, String fileName, HashMap<String, String>branchName, HashMap<String, Long>branchSales){
-		File fileUp = new File(arg, fileName);
+	public static boolean output(String path, String fileName, HashMap<String, String>listName, HashMap<String, Long>listSales){
+		File fileUp = new File(path, fileName);
 		BufferedWriter bw = null;
 		try {
 			FileWriter fw = new FileWriter(fileUp);
 			bw = new BufferedWriter(fw);
 
 		//branch.outファイルへ出力
-			for(Map.Entry<String, String> entry : branchName.entrySet()) {
-				if(branchSales.get(entry.getKey()) == null){
+			for(Map.Entry<String, String> entry : listName.entrySet()) {
+				if(listSales.get(entry.getKey()) == null){
 					bw.write(entry.getKey() + "," + entry.getValue() + "," + 0);
 					bw.newLine();
 				}else{
-					bw.write(entry.getKey() + "," + entry.getValue() + "," + branchSales.get(entry.getKey()));
+					bw.write(entry.getKey() + "," + entry.getValue() + "," + listSales.get(entry.getKey()));
 					bw.newLine();
 				}
 			}
