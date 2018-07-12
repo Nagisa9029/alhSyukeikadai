@@ -100,7 +100,7 @@ public class CalculateSales {
 				}
 				branchSales.put(salesArray.get(0), sum);
 				
-			} catch (IOException e) {
+			}catch (IOException e) {
 				System.out.println("予期せぬエラーが発生しました");
 				return;
 			}finally{
