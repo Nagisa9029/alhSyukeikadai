@@ -14,17 +14,16 @@ import java.util.Map;
 public class CalculateSales {
 
 	public static void main(String[] args) {
-		//支店コード,支店名
-		HashMap<String, String> branchName = new HashMap<>();
-		//支店コード,売り上げ
-		HashMap<String, Long> branchSales = new HashMap<>();
-
-
 		//コマンドライン引数が1つではない場合
 		if (args.length != 1){
 			System.out.println("予期せぬエラーが発生しました");
 			return;
 		}
+		//支店コード,支店名
+		HashMap<String, String> branchName = new HashMap<>();
+		//支店コード,売り上げ
+		HashMap<String, Long> branchSales = new HashMap<>();
+
 /*------------------------支店定義ファイル読み込み--------------------*/
 		if(!input(args[0], "branch.lst", "支店", "^\\d{3}$", branchName, branchSales)){
 			return;
@@ -41,10 +40,10 @@ public class CalculateSales {
 			File item = files[i];
 
 			//売上ファイル名の選別チェック
-			if(item.getName().matches("^\\d{8}\\.rcd$") && item.isFile()){
+			if(item.isFile() && item.getName().matches("^\\d{8}\\.rcd$")){
 				rcdName.add(files[i].getName());
-
-			//連番チェック用リスト抽出
+				
+				//連番チェック用リスト抽出
 				String[] num = files[i].getName().split("\\.");
 				rcdNumber.add(num[0]);
 			}
@@ -75,33 +74,31 @@ public class CalculateSales {
 				while((str = br.readLine()) != null){
 					salesArray.add(str);
 				}
-
-
-		//売上ファイルの行数が2行ではない場合
+				
+				//売上ファイルの行数が2行ではない場合
 				if(salesArray.size() != 2){
 					System.out.println(rcdName.get(i) + "のフォーマットが不正です");
 					return;
 				}
-		//売上ファイルの支店コードが、支店定義ファイルに存在しない場合
+				//売上ファイルの支店コードが、支店定義ファイルに存在しない場合
 				if(!branchName.containsKey(salesArray.get(0))){
 					System.out.println(rcdName.get(i) + "の支店コードが不正です");
 					return;
 				}
-		//売上ファイルの売上金額が数字以外（不正）な場合
+				//売上ファイルの売上金額が数字以外（不正）な場合
 				if(!salesArray.get(1).matches("^[0-9]{1,10}$")){
 					System.out.println("予期せぬエラーが発生しました");
 					return;
 				}
-		//売上HashMapを支店コード（key）で呼び出し、加算
+				//売上HashMapを支店コード（key）で呼び出し、加算
 				sum = Long.parseLong(salesArray.get(1)) + branchSales.get(salesArray.get(0));
-
-		//集計売上金額が１０桁を超えた場合
+				
+				//集計売上金額が１０桁を超えた場合
 				if(String.valueOf(sum).length() > 10){
 					System.out.println("合計金額が10桁を超えました");
 					return;
-				}else{
-					branchSales.put(salesArray.get(0), sum);
 				}
+				branchSales.put(salesArray.get(0), sum);
 				
 			} catch (IOException e) {
 				System.out.println("予期せぬエラーが発生しました");
@@ -141,14 +138,13 @@ public class CalculateSales {
 			while((s = br.readLine()) != null){
 				String[] str = s.split(",");
 
-				//支店定義ファイルのフォーマットに関するIF
-				if(str.length == 2 && str[0].matches(promise)){
-					listName.put(str[0], str[1]);
-					listSales.put(str[0], 0L);
-				}else{  //支店定義ファイルのフォーマットが不正な場合
+				//支店定義ファイルのフォーマットが不正な場合
+				if(!str[0].matches(promise) || str.length != 2){
 					System.out.println(bra + "定義ファイルのフォーマットが不正です");
 					return false;
 				}
+				listName.put(str[0], str[1]);
+				listSales.put(str[0], 0L);
 			}
 		}catch(IOException e) {
 			System.out.println("予期せぬエラーが発生しました");
@@ -174,16 +170,11 @@ public class CalculateSales {
 		try {
 			FileWriter fw = new FileWriter(fileUp);
 			bw = new BufferedWriter(fw);
-
-		//branch.outファイルへ出力
+			
+			//branch.outファイルへ出力
 			for(Map.Entry<String, String> entry : listName.entrySet()) {
-				if(listSales.get(entry.getKey()) == null){
-					bw.write(entry.getKey() + "," + entry.getValue() + "," + 0);
-					bw.newLine();
-				}else{
-					bw.write(entry.getKey() + "," + entry.getValue() + "," + listSales.get(entry.getKey()));
-					bw.newLine();
-				}
+				bw.write(entry.getKey() + "," + entry.getValue() + "," + listSales.get(entry.getKey()));
+				bw.newLine();
 			}
 
 		} catch (IOException e) {
