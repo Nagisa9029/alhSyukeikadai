@@ -27,6 +27,9 @@ public class CalculateSales {
 		}
 /*------------------------支店定義ファイル読み込み--------------------*/
 		inPut(args[0], "branch.lst", branchName);
+		if(!inPut(args[0], "branch.lst", branchName)){
+			return;
+		}
 /*
 		File file = new File(args[0], "branch.lst");
 		BufferedReader br = null;
@@ -159,8 +162,10 @@ public class CalculateSales {
 /*---------------------出力処理------------------------*/
 
 		outPut(args[0], "branch.out", branchName, branchSales);
-		
-		/*
+		if(!outPut(args[0], "branch.out", branchName, branchSales)){
+			return;
+		}
+/*
 		File fileUp = new File(args[0], "branch.out");
 		BufferedWriter bw = null;
 		try {
@@ -191,19 +196,19 @@ public class CalculateSales {
 				return;
 			}
 		}
-		*/
+*/
 	}
 
 /*--------------入力メソッド(支店定義ファイル-------------------------*/
 
-	public static void inPut(String arg, String filename, HashMap<String, String>branchName){
+	public static boolean inPut(String arg, String filename, HashMap<String, String>branchName){
 		File file = new File(arg, filename);
 		BufferedReader br = null;
 
 		//支店定義ファイルが存在しない場合
 		if(!file.exists()){
 			System.out.println("支店定義ファイルが存在しません");
-			return;
+			return false;
 		}
 		try{
 			FileReader fr = new FileReader(file);
@@ -217,12 +222,12 @@ public class CalculateSales {
 					branchName.put(str[0], str[1]);
 				}else{  //支店定義ファイルのフォーマットが不正な場合
 					System.out.println("支店定義ファイルのフォーマットが不正です");
-					return;
+					return false;
 				}
 			}
 		}catch(IOException e) {
 			System.out.println("予期せぬエラーが発生しました");
-			return;
+			return false;
 		}finally{
 			try {
 				if(br != null){
@@ -230,14 +235,15 @@ public class CalculateSales {
 				}
 			}catch (IOException e) {
 				System.out.println("予期せぬエラーが発生しました");
-				return;
+				return false;
 			}
 		}
+		return true;
 	}
 
 
 /*---------------------出力メソッド-----------------------------------*/
-	public static void outPut(String arg, String filename, HashMap<String, String>branchName, HashMap<String, Long>branchSales){
+	public static boolean outPut(String arg, String filename, HashMap<String, String>branchName, HashMap<String, Long>branchSales){
 		File fileUp = new File(arg, filename);
 		BufferedWriter bw = null;
 		try {
@@ -257,7 +263,7 @@ public class CalculateSales {
 
 		} catch (IOException e) {
 			System.out.println("予期せぬエラーが発生しました");
-			return;
+			return false;
 		}finally{
 			try {
 				if(bw != null){
@@ -265,8 +271,9 @@ public class CalculateSales {
 				}
 			} catch (IOException e) {
 				System.out.println("予期せぬエラーが発生しました");
-				return;
+				return false;
 			}
 		}
+		return true;
 	}
 }
