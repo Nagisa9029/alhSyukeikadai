@@ -26,7 +26,7 @@ public class CalculateSales {
 			return;
 		}
 /*------------------------支店定義ファイル読み込み--------------------*/
-		if(!input(args[0], "branch.lst", "^\\d{3}$", branchName, branchSales)){
+		if(!input(args[0], "branch.lst", "支店", "^\\d{3}$", branchName, branchSales)){
 			return;
 		}
 
@@ -125,13 +125,13 @@ public class CalculateSales {
 
 /*--------------入力メソッド(支店定義ファイル-------------------------*/
 
-	public static boolean input(String path, String fileName, String promise, HashMap<String, String>listName, HashMap<String, Long>listSales){
+	public static boolean input(String path, String fileName, String bra, String promise, HashMap<String, String>listName, HashMap<String, Long>listSales){
 		File file = new File(path, fileName);
 		BufferedReader br = null;
 
 		//支店定義ファイルが存在しない場合
 		if(!file.exists()){
-			System.out.println( X + "定義ファイルが存在しません");
+			System.out.println(bra + "定義ファイルが存在しません");
 			return false;
 		}
 		try{
@@ -146,7 +146,7 @@ public class CalculateSales {
 					listName.put(str[0], str[1]);
 					listSales.put(str[0], 0L);
 				}else{  //支店定義ファイルのフォーマットが不正な場合
-					System.out.println( X + "定義ファイルのフォーマットが不正です");
+					System.out.println(bra + "定義ファイルのフォーマットが不正です");
 					return false;
 				}
 			}
